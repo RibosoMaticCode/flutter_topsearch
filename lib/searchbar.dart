@@ -137,69 +137,70 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
                     },
                     controller: _controller,
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Busca lo que necesitas',
-                        fillColor: Colors.white,
-                        filled: true,
-                        // suffixIcon: () {
-                        //   if (showClose == true) {
-                        //     return IconButton(
-                        //       iconSize: 24.0,
-                        //       tooltip: 'Borrar',
-                        //       padding: EdgeInsets.zero,
-                        //       constraints: const BoxConstraints(),
-                        //       icon: const Icon(
-                        //         Icons.clear,
-                        //       ),
-                        //       onPressed: () {
-                        //         setState(() {
-                        //           query = '';
-                        //           showClose = false;
-                        //         });
-                        //         _controller.clear();
-                        //         hideOverlay();
-                        //       },
-                        //     );
-                        //   }
-                        // }(),
-                        suffixIcon: IconButton(
-                          iconSize: 24.0,
-                          tooltip: 'Borrar',
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          icon: const Icon(
-                            Icons.clear,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              query = '';
-                              showClose = false;
-                            });
-                            _controller.clear();
-                            hideOverlay();
-                          },
-                        )),
+                      border: InputBorder.none,
+                      hintText: 'Busca lo que necesitas',
+                      fillColor: Colors.white,
+                      filled: true,
+                      suffixIcon: () {
+                        if (showClose == true) {
+                          return IconButton(
+                            iconSize: 24.0,
+                            tooltip: 'Borrar',
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: const Icon(
+                              Icons.clear,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                query = '';
+                                showClose = false;
+                              });
+                              _controller.clear();
+                              hideOverlay();
+                            },
+                          );
+                        }
+                      }(),
+                    ),
+                    // suffixIcon: IconButton(
+                    //   iconSize: 24.0,
+                    //   tooltip: 'Borrar',
+                    //   padding: EdgeInsets.zero,
+                    //   constraints: const BoxConstraints(),
+                    //   icon: const Icon(
+                    //     Icons.clear,
+                    //   ),
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       query = '';
+                    //       showClose = false;
+                    //     });
+                    //     _controller.clear();
+                    //     hideOverlay();
+                    //   },
+                    // )),
                     textAlignVertical: TextAlignVertical.center,
                     autofocus: false,
                     focusNode: focusNode,
                     textInputAction: TextInputAction.search,
                     onChanged: (String searchValue) {
-                      // setState(() {
-                      //   query = newSearchValue;
+                      setState(() {
+                        query = searchValue;
 
-                      //   if (newSearchValue.length >= searchLengthMin) {
-                      //     showClose = true;
-                      //   } else {
-                      //     showClose = false;
-                      //   }
-                      // });
-                      // if (query!.length >= searchLengthMin) {
-                      //   showOverlay();
-                      // } else {
-                      //   hideOverlay();
-                      // }
+                        if (searchValue.length >= searchLengthMin) {
+                          showClose = true;
+                        } else {
+                          showClose = false;
+                        }
+                      });
+                      if (query!.length >= searchLengthMin) {
+                        showOverlay();
+                      } else {
+                        hideOverlay();
+                      }
 
-                      stateValue(searchValue);
+                      // stateValue(searchValue);
                     },
                     onFieldSubmitted: (String searchValue) {},
                   ),
