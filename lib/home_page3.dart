@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_topsearch/searchbar.dart';
 
@@ -11,21 +12,27 @@ class HomePage3 extends StatefulWidget {
 class _HomePage3State extends State<HomePage3> {
   // String? query = ' ';
   // final _controller = TextEditingController();
-  // bool showLogo = true;
+  bool showLogoSearch = false;
+  bool? showSuggestions;
   // bool showBack = true;
   // bool showClose = false;
   // int searchActionMin = 2;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      // onTap: () {
-      //   FocusScope.of(context).unfocus();
-      //   setState(() {
-      //     showBack = true;
-      //     showLogo = true;
-      //   });
-      // },
+    return NotificationListener(
+      onNotification: (notificationInfo) {
+        if (notificationInfo is ScrollStartNotification) {
+          print("scroll");
+          print("detail:" + notificationInfo.dragDetails.toString());
+          setState(() {
+            showSuggestions = false;
+          });
+
+          /// your code
+        }
+        return true;
+      },
       child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 60,
@@ -47,113 +54,10 @@ class _HomePage3State extends State<HomePage3> {
             //     : null,
             elevation: 0,
             titleSpacing: 0,
-            title: const TitleSearchBar(),
-            // title: LayoutBuilder(
-            //   builder: (BuildContext context, BoxConstraints constraints) {
-            //     return Container(
-            //       padding: const EdgeInsets.only(right: 16.0),
-            //       child: Flex(
-            //         direction: Axis.horizontal,
-            //         children: [
-            //           (showLogo == true)
-            //               ? Container(
-            //                   // color: Colors.yellow,
-            //                   child: Image.asset('assets/images/logotipo.png'))
-            //               : Container(), // <-- SEE HERE
-            //           Expanded(
-            //             child: Container(
-            //               margin: showLogo == false
-            //                   ? const EdgeInsets.only(left: 20.0)
-            //                   : null,
-            //               decoration: const BoxDecoration(
-            //                 color: Colors.white,
-            //               ),
-            //               child: Row(children: [
-            //                 Expanded(
-            //                   child: TextFormField(
-            //                     onTap: () {
-            //                       setState(() {
-            //                         showLogo = false;
-            //                         showBack = false;
-            //                       });
-            //                     },
-            //                     controller: _controller,
-            //                     decoration: InputDecoration(
-            //                       border: InputBorder.none,
-            //                       hintText: 'Busca lo que necesitas',
-            //                       fillColor: Colors.white,
-            //                       filled: true,
-            //                       suffixIcon: () {
-            //                         if (showClose == true) {
-            //                           debugPrint('mostrar boton cerrar');
-            //                           return IconButton(
-            //                             iconSize: 24.0,
-            //                             tooltip: 'Borrar',
-            //                             padding: EdgeInsets.zero,
-            //                             constraints: const BoxConstraints(),
-            //                             icon: const Icon(
-            //                               Icons.clear,
-            //                             ),
-            //                             onPressed: () {
-            //                               setState(() {
-            //                                 query = '';
-            //                                 showClose = false;
-            //                               });
-            //                               _controller.clear();
-            //                             },
-            //                           );
-            //                         }
-            //                       }(),
-            //                     ),
-            //                     textAlignVertical: TextAlignVertical.center,
-            //                     autofocus: false,
-            //                     textInputAction: TextInputAction.search,
-            //                     onChanged: (String newSearchValue) {
-            //                       setState(() {
-            //                         query = newSearchValue;
-
-            //                         if (newSearchValue.length >=
-            //                             searchActionMin) {
-            //                           showClose = true;
-            //                         } else {
-            //                           showClose = false;
-            //                         }
-            //                       });
-            //                     },
-            //                     onFieldSubmitted: (String searchValue) {},
-            //                   ),
-            //                 ),
-            //                 IconButton(
-            //                   iconSize: 24.0,
-            //                   color: Colors.grey,
-            //                   tooltip: 'Lector QR',
-            //                   padding: const EdgeInsets.only(left: 0.0),
-            //                   constraints: const BoxConstraints(),
-            //                   icon: const Icon(
-            //                     Icons.qr_code_outlined,
-            //                   ),
-            //                   onPressed: () {},
-            //                 ),
-            //                 IconButton(
-            //                   iconSize: 24.0,
-            //                   color: Colors.grey,
-            //                   tooltip: 'Buscar',
-            //                   padding:
-            //                       const EdgeInsets.symmetric(horizontal: 8.0),
-            //                   constraints: const BoxConstraints(),
-            //                   icon: const Icon(
-            //                     Icons.search,
-            //                   ),
-            //                   onPressed: () {},
-            //                 ),
-            //               ]),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // ),
+            title: TitleSearchBar(
+              showLogo: showLogoSearch,
+              showSuggestions: showSuggestions,
+            ),
           ),
           body: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -163,26 +67,46 @@ class _HomePage3State extends State<HomePage3> {
                   width: double.infinity,
                   height: 200.0,
                   color: Colors.orange,
+                  child: const Text(
+                    "A",
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                 ),
                 Container(
                   width: double.infinity,
                   height: 200.0,
                   color: Colors.blueGrey,
+                  child: const Text(
+                    "B",
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                 ),
                 Container(
                   width: double.infinity,
                   height: 200.0,
                   color: Colors.green,
+                  child: const Text(
+                    "C",
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                 ),
                 Container(
                   width: double.infinity,
                   height: 200.0,
                   color: Colors.yellow,
+                  child: const Text(
+                    "D",
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                 ),
                 Container(
                   width: double.infinity,
                   height: 200.0,
                   color: Colors.purpleAccent,
+                  child: const Text(
+                    "E",
+                    style: TextStyle(fontSize: 30.0),
+                  ),
                 )
               ],
             ),

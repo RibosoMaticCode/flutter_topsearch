@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TitleSearchBar extends StatefulWidget {
-  const TitleSearchBar({super.key});
+  final Function? updateButtons;
+  final bool? showLogo;
+  bool? showSuggestions;
+  // const TitleSearchBar({super.key});
+  TitleSearchBar(
+      {Key? key, this.updateButtons, this.showLogo, this.showSuggestions})
+      : super(key: key);
 
   @override
   State<TitleSearchBar> createState() => _TitleSearchBarState();
@@ -20,16 +26,6 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
   @override
   void initState() {
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
-
-    focusNode.addListener(() {
-      // if (focusNode.hasFocus) {
-      //   showOverlay();
-      // } else {
-      //   hideOverlay();
-      // }
-    });
   }
 
   @override
@@ -44,7 +40,6 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
       entry = null;
     }
 
-    debugPrint('mostrar overlay');
     final OverlayState? overlayState = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
@@ -57,27 +52,11 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
             width: size.width - 40,
             child: suggestionList()));
     overlayState?.insert(entry!);
-    // WidgetsBinding.instance
-    //     .addPostFrameCallback((_) => overlayState?.insert(entry!));
   }
 
   void hideOverlay() {
-    debugPrint('ocultar overlay');
     entry?.remove();
     entry = null;
-  }
-
-  void stateValue(String value) {
-    setState(() {
-      query = value;
-      if (query!.length >= searchLengthMin) {
-        showOverlay();
-        // WidgetsBinding.instance.addPostFrameCallback((_) => showOverlay());
-        // WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(overlayEntry));
-      } else {
-        hideOverlay();
-      }
-    });
   }
 
   Widget suggestionList() => Material(
@@ -106,23 +85,23 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    // return LayoutBuilder(
-    //   builder: (BuildContext context, BoxConstraints constraints) {
+    // if (widget.showSuggestions == false) hideOverlay();
 
     return Container(
       padding: const EdgeInsets.only(right: 16.0),
       child: Flex(
         direction: Axis.horizontal,
         children: [
-          (showLogo == true)
+          (widget.showLogo == true || showLogo == true)
               ? Container(
-                  // color: Colors.yellow,
+                  color: Colors.yellow,
                   child: Image.asset('assets/images/logotipo.png'))
               : Container(), // <-- SEE HERE
           Expanded(
             child: Container(
-              margin:
-                  showLogo == false ? const EdgeInsets.only(left: 20.0) : null,
+              margin: (widget.showLogo == false || showLogo == false)
+                  ? const EdgeInsets.only(left: 20.0)
+                  : null,
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
@@ -130,10 +109,7 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
                 Expanded(
                   child: TextFormField(
                     onTap: () {
-                      setState(() {
-                        showLogo = false;
-                        showBack = false;
-                      });
+                      activeSearch();
                     },
                     controller: _controller,
                     decoration: InputDecoration(
@@ -152,34 +128,12 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
                               Icons.clear,
                             ),
                             onPressed: () {
-                              setState(() {
-                                query = '';
-                                showClose = false;
-                              });
-                              _controller.clear();
-                              hideOverlay();
+                              emptySearch();
                             },
                           );
                         }
                       }(),
                     ),
-                    // suffixIcon: IconButton(
-                    //   iconSize: 24.0,
-                    //   tooltip: 'Borrar',
-                    //   padding: EdgeInsets.zero,
-                    //   constraints: const BoxConstraints(),
-                    //   icon: const Icon(
-                    //     Icons.clear,
-                    //   ),
-                    //   onPressed: () {
-                    //     setState(() {
-                    //       query = '';
-                    //       showClose = false;
-                    //     });
-                    //     _controller.clear();
-                    //     hideOverlay();
-                    //   },
-                    // )),
                     textAlignVertical: TextAlignVertical.center,
                     autofocus: false,
                     focusNode: focusNode,
@@ -187,20 +141,8 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
                     onChanged: (String searchValue) {
                       setState(() {
                         query = searchValue;
-
-                        if (searchValue.length >= searchLengthMin) {
-                          showClose = true;
-                        } else {
-                          showClose = false;
-                        }
                       });
-                      if (query!.length >= searchLengthMin) {
-                        showOverlay();
-                      } else {
-                        hideOverlay();
-                      }
-
-                      // stateValue(searchValue);
+                      showSuggestions();
                     },
                     onFieldSubmitted: (String searchValue) {},
                   ),
@@ -233,8 +175,52 @@ class _TitleSearchBarState extends State<TitleSearchBar> {
         ],
       ),
     );
+  }
 
-    //   },
-    // );
+  void activeSearch() {
+    // ocultar back, logo
+    setState(() {
+      showBack = false;
+      showLogo = false;
+    });
+    showSuggestions();
+  }
+
+  void showSuggestions() {
+    if (query!.length >= searchLengthMin) {
+      setState(() {
+        showClose = true;
+      });
+      showOverlay();
+    } else {
+      setState(() {
+        showClose = false;
+      });
+      hideOverlay();
+    }
+  }
+
+  void deactiveSearch() {
+    // mostrar back, logo
+    setState(() {
+      showBack = true;
+      showLogo = true;
+    });
+
+    // ocultar sugerencias
+    hideOverlay();
+  }
+
+  void emptySearch() {
+    // borrar inputtext
+    // ocultar boton close
+    _controller.clear();
+    setState(() {
+      query = '';
+      showClose = false;
+    });
+
+    // ocultar sugerencias
+    hideOverlay();
   }
 }
